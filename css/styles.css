@@ -1,0 +1,115 @@
+/* Basic styles for the Spotify Player */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  background-color: #1db954;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+#login-container {
+  text-align: center;
+  margin: 40px 0;
+}
+
+#login-button {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#login-button:hover {
+  background-color: #1ed760;
+}
+
+#playlist-container {
+  margin-top: 30px;
+}
+
+#playlists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.playlist-item {
+  background-color: #282828;
+  padding: 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.playlist-item:hover {
+  background-color: #333;
+}
+
+.playlist-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.playlist-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.playlist-tracks {
+  color: #b3b3b3;
+  font-size: 14px;
+}
+
+#user-profile {
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 8px 15px;
+  border-radius: 20px;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+h2 {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+main {
+  padding: 2rem;
+}
+
+#player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
