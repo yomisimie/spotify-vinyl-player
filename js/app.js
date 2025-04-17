@@ -46,29 +46,41 @@ function checkUrlForToken() {
 // Helper function to make authenticated API requests
 async function callSpotifyApi(endpoint) {
   const token = localStorage.getItem("spotify_access_token");
+  console.log("Access token:", token ? "Found" : "Not found");
 
   if (!token) {
     throw new Error("No access token available");
   }
 
-  const response = await fetch(`${API_ENDPOINT}${endpoint}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log(`Calling Spotify API: ${endpoint}`);
 
-  // Handle token expiration
-  if (response.status === 401) {
-    localStorage.removeItem("spotify_access_token");
-    showLoginScreen();
-    throw new Error("Token expired. Please log in again.");
+  try {
+    const response = await fetch(`${API_ENDPOINT}${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Handle token expiration
+    if (response.status === 401) {
+      console.error("Token expired or invalid");
+      localStorage.removeItem("spotify_access_token");
+      showLoginScreen();
+      throw new Error("Token expired. Please log in again.");
+    }
+
+    if (!response.ok) {
+      console.error(`API error: ${response.status} ${response.statusText}`);
+      throw new Error(`API request failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("API response:", data);
+    return data;
+  } catch (error) {
+    console.error("API call error:", error);
+    throw error;
   }
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.statusText}`);
-  }
-
-  return response.json();
 }
 
 // Get user profile and display name
@@ -127,7 +139,18 @@ function showMainContent() {
 
 // Initialize the application
 async function initApp() {
+  console.log("App initializing...");
+  console.log("DOM elements:", {
+    loginButton: !!loginButton,
+    loginContainer: !!loginContainer,
+    playlistContainer: !!playlistContainer,
+    playlistsEl: !!playlistsEl,
+    userProfileEl: !!userProfileEl,
+    displayNameEl: !!displayNameEl,
+  });
+
   const isLoggedIn = checkUrlForToken();
+  console.log("User logged in:", isLoggedIn);
 
   if (isLoggedIn) {
     showMainContent();
