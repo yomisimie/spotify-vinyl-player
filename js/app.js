@@ -88,12 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event Listeners
   if (loginButton) {
     loginButton.addEventListener("click", () => {
-      // Create and redirect to Spotify authorization URL
-      const authUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
-        REDIRECT_URI
-      )}&scope=${encodeURIComponent(
-        SCOPES
-      )}&response_type=token&show_dialog=true`;
+      // Create and redirect to Spotify authorization URL using Implicit Grant Flow
+      const params = new URLSearchParams({
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        scope: SCOPES,
+        response_type: "token",
+        show_dialog: "true",
+      });
+
+      const authUrl = `${AUTH_ENDPOINT}?${params.toString()}`;
+      console.log("Authorization URL:", authUrl);
       window.location.href = authUrl;
     });
   }
