@@ -113,3 +113,13 @@ main {
   align-items: center;
   gap: 1rem;
 }
+
+.error-message {
+  background-color: #e22134;
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}

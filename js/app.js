@@ -1,6 +1,8 @@
 // Spotify API Configuration
 const CLIENT_ID = "f9938a519d6440a6a9764868b76f8e6e"; // Replace with your Spotify Client ID
-const REDIRECT_URI = window.location.origin + window.location.pathname;
+// Use a fixed, hardcoded redirect URI instead of the dynamic one
+const REDIRECT_URI = "https://yomisimie.github.io/spotify-vinyl-player"; // Replace with your actual deployed URL
+// const REDIRECT_URI = window.location.origin + window.location.pathname; // Original dynamic URL
 const SCOPES = "playlist-read-private playlist-read-collaborative";
 
 // Spotify API URLs
@@ -88,18 +90,31 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event Listeners
   if (loginButton) {
     loginButton.addEventListener("click", () => {
-      // Create and redirect to Spotify authorization URL using Implicit Grant Flow
-      const params = new URLSearchParams({
-        client_id: CLIENT_ID,
-        redirect_uri: REDIRECT_URI,
-        scope: SCOPES,
-        response_type: "token",
-        show_dialog: "true",
-      });
+      try {
+        // Create and redirect to Spotify authorization URL using Implicit Grant Flow
+        const params = new URLSearchParams({
+          client_id: CLIENT_ID,
+          redirect_uri: REDIRECT_URI,
+          scope: SCOPES,
+          response_type: "token",
+          show_dialog: "true",
+        });
 
-      const authUrl = `${AUTH_ENDPOINT}?${params.toString()}`;
-      console.log("Authorization URL:", authUrl);
-      window.location.href = authUrl;
+        const authUrl = `${AUTH_ENDPOINT}?${params.toString()}`;
+        console.log("Authorization URL:", authUrl);
+
+        // Log exact parameters for debugging
+        console.log("Auth parameters:", {
+          client_id: CLIENT_ID,
+          redirect_uri: REDIRECT_URI,
+          scope: SCOPES,
+          response_type: "token",
+        });
+
+        window.location.href = authUrl;
+      } catch (error) {
+        console.error("Error creating authorization URL:", error);
+      }
     });
   }
 
@@ -163,9 +178,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Check for login errors
+  function checkForLoginErrors() {
+    if (window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      if (hash.includes("error=")) {
+        const errorParams = new URLSearchParams(hash);
+        const error = errorParams.get("error");
+        const errorDescription = errorParams.get("error_description");
+
+        console.error("Login error:", error, errorDescription);
+
+        // Display error message to user
+        const errorMessage = document.createElement("div");
+        errorMessage.className = "error-message";
+        errorMessage.innerHTML = `<strong>Login Error:</strong> ${error}<br>${
+          errorDescription || ""
+        }`;
+        document.getElementById("login-container").prepend(errorMessage);
+
+        return true;
+      }
+    }
+    return false;
+  }
+
   // Initialize the application
   async function initApp() {
     console.log("App initializing...");
+
+    // Check for login errors first
+    const hasLoginError = checkForLoginErrors();
+    if (hasLoginError) {
+      showLoginScreen();
+      return;
+    }
 
     const isLoggedIn = checkUrlForToken();
     console.log("User logged in:", isLoggedIn);
